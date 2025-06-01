@@ -1,0 +1,11 @@
+PNG Article: https://compress-or-die.com/Understanding-PNG
+
+- 1 byte can represent exactly 256 values, so each color (r, g, b) of a pixel consumes 1 byte (8 bits) of memory. 
+- 1 pixel = 3 bytes in an RGB PNG (24-bit picture)
+
+- 1 pixel = 4 bytes in RGBA PNG (32-bit picture), where there's one extra alpha bit per pixel.
+
+- An 8 bit PNG uses 1 byte per pixel, where that byte points to a color in a palette with 256 possible colors. The pallete definition is added to the file.
+
+** The best path forward is probably to code an implementation of a pixel grid with shapes, colors, gradients, etc., and provide a mechanism to conver that into
+a Pillow Image object, so we don't need to re-implement the low level PNG / GIF stuff (compression modes, etc etc)

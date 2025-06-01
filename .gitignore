@@ -1,0 +1,9 @@
+.pytest_cache
+__pycache__
+*cache
+.vscode
+*.gif
+server_user_id.txt
+*.bkp
+*.pyc
+art_generation_scripts
