@@ -1,21 +1,21 @@
-from pyartkit.geometry.vertex import Vertex
+from pyartkit.geometry.point import Point
 
-def test_vertex():
+def test_point():
     # Create a vertex
-    v = Vertex(7, 24)
+    v = Point(7, 24)
 
     # Test the coordinates
     assert v.x == 7
     assert v.y == 24
 
-def test_vertex_equality():
-    v = Vertex(1, 2)
+def test_point_equality():
+    v = Point(1, 2)
 
     # Test the equality operator
-    v2 = Vertex(1, 2)
+    v2 = Point(1, 2)
     assert v == v2
 
     # Test the inequality operator
-    v3 = Vertex(4, 5)
+    v3 = Point(4, 5)
     assert v != v3
 

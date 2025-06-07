@@ -1,6 +1,6 @@
 
 
-class Vertex:
+class Point:
     __slots__ = ("_x", "_y")
     _x: int
     _y: int
@@ -18,6 +18,12 @@ class Vertex:
         return self._y
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Vertex):
+        if not isinstance(other, Point):
             return False
         return self._x == other.x and self._y == other.y
+
+
+def P(x, y):
+    """Shorthand for creating a Point with the specified coordinates."""
+    return Point(x, y)
+

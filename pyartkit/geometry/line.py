@@ -1,7 +1,7 @@
 
 
 from pyartkit.geometry.formulas import PolynomialFormula
-from pyartkit.geometry.vertex import Vertex
+from pyartkit.geometry.point import Point
 
 DIMENSIONS = {"x", "y"}
 
@@ -9,13 +9,13 @@ DIMENSIONS = {"x", "y"}
 class Line:
     __slots__ = ("_start", "_end", "_dependent_variable", "_formula", "_points_crossed")
 
-    _start: Vertex
-    _end: Vertex
+    _start: Point
+    _end: Point
     _formula: PolynomialFormula
     _points_crossed: set
     _dependent_variable: str
 
-    def __init__(self, start: Vertex, end: Vertex):
+    def __init__(self, start: Point, end: Point):
         self._start = start
         self._end = end
         self._calculate_formula()
