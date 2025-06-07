@@ -9,3 +9,49 @@ PNG Article: https://compress-or-die.com/Understanding-PNG
 
 ** The best path forward is probably to code an implementation of a pixel grid with shapes, colors, gradients, etc., and provide a mechanism to conver that into
 a Pillow Image object, so we don't need to re-implement the low level PNG / GIF stuff (compression modes, etc etc)
+
+
+Algorithm Ideas for Pixel Mapping / Coloring:
+
+Most efficient possible is to visit each pixel which requires coloring exactly once, and to know which entity owns that pixel right away.
+
+W = Canvas Width
+H = Canvas Height
+N = Num Pixels (WxH)
+G = Number of Graphics (shapes/entities/etc.)
+
+** To flatten layers, just start from layer 1 and append each subsequent layer's graphics **
+
+1. Assign each Graphic a priority/id, build a WxH two dimensional array, and from highest-to-lowest priority
+mark pixel ownership, and skip any pixels already owned. Start the ownership algorithm from the end of the combined list after layer flattening.
+- Worst case scenario is each graphic is literally the full canvas and we visit each pixel G times, so ownership identification is O(NxG)
+- Coloring the pixels will always be O(N) since we've identified which shape owns the pixel ahead of time.
+- Total ownership+coloring = O(NxG) + O(N) = O(NG+N) ... Still pretty bad
+- Are we better off coloring pixels on the first pass, rather than marking ownership?
+
+2. Similar to (1), but rather than marking ownership just color the pixel right away. Then when we visit an already colored pixel, just skip.
+- Still O(NxG) since we could have a bunch of rectangles the size of the full canvas, but we eliminate the revisitation.
+- Are we better off directly setting the pixels when we add a shape to the canvas?
+Probably not, since removing that shape would be expensive, and we recolor each overlapped pixel every new shape added
+
+3. Similar to (2) but add a method to the shape class to identify overlap and skip those pixels? Is this just as bad for visiting each pixel G times?
+
+
+* Note: What does redrawing look like? Let's say we change one shape on a canvas, do we need to redraw the whole thing? We can
+iterate over only the pixels contained by the redrawn shape, BUT we wouldn't know from our pixel grid if another shape owns the pixel already
+unless we use Algorithm 1
+
+- Pixel ownership gets tricky when we remove a shape. We'd need to iterate over all pixels owned by the shape to be removed, mark them as unowned, then
+iterate over each shape with lower priority to re-evaluate ownership
+
+? Should we make Pixels a more complex object with awareness of which shapes claim the pixel? And which shape has primary ownership?
+Relationship would probably need to be bidirectional.. When a Shape is removed from a canvas, unlink it from the Pixel? And have a mechanism for checking
+which pixels a shape actually owns?
+
+
+--- With help of ChatGPT ---
+Visit each pixel once
+For each shape in the priority queue, from highest to lowest, check if this pixel is owned by that shape
+Stop when we find the highest priority shape which contains the pixel
+Get the color for the pixel from the owning shape, then move to the next pixel
+If no shape owns the pixel, use the Canvas's color (or strategy)

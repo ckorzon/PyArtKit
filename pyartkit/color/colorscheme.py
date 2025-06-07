@@ -20,7 +20,7 @@ class ColorScheme(ABC):
         """
         pass
 
-class StaticColorScheme(ABC, ColorScheme):
+class StaticColorScheme(ColorScheme):
     """
     A static color scheme that returns a fixed color for all pixels.
     """

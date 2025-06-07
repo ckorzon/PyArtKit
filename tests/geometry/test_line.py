@@ -1,11 +1,11 @@
 
-from pyartkit.geometry.vertex import Vertex
+from pyartkit.geometry.point import Point
 
 
 def test_basic_line_points_crossed():
     from pyartkit.geometry.line import Line
 
-    line = Line(Vertex(1, 2), Vertex(5, 6))
+    line = Line(Point(1, 2), Point(5, 6))
 
     crossed_points = line.get_points_crossed()
 
@@ -18,7 +18,7 @@ def test_basic_line_points_crossed():
 def test_negative_line_points_crossed():
     from pyartkit.geometry.line import Line
 
-    line = Line(Vertex(-3, -6), Vertex(-9, -12))
+    line = Line(Point(-3, -6), Point(-9, -12))
 
     crossed_points = line.get_points_crossed()
 
@@ -33,7 +33,7 @@ def test_negative_line_points_crossed():
 def test_vertical_line_points_crossed():
     from pyartkit.geometry.line import Line
 
-    line = Line(Vertex(2, 1), Vertex(2, 5))
+    line = Line(Point(2, 1), Point(2, 5))
 
     crossed_points = line.get_points_crossed()
 
@@ -46,7 +46,7 @@ def test_vertical_line_points_crossed():
 def test_line_points_crossed_onehalf_slope():
     from pyartkit.geometry.line import Line
 
-    line = Line(Vertex(0, 2), Vertex(4, 4))
+    line = Line(Point(0, 2), Point(4, 4))
     # Slope = 1/2
 
     crossed_points = line.get_points_crossed()
@@ -60,7 +60,7 @@ def test_line_points_crossed_onehalf_slope():
 def test_line_points_crossed_positive_fraction_slope():
     from pyartkit.geometry.line import Line
 
-    line = Line(Vertex(1, 0), Vertex(4, 7))
+    line = Line(Point(1, 0), Point(4, 7))
     # Slope = 7/3
 
     crossed_points = line.get_points_crossed()
@@ -74,7 +74,7 @@ def test_line_points_crossed_positive_fraction_slope():
 def test_line_points_crossed_horizontal():
     from pyartkit.geometry.line import Line
 
-    line = Line(Vertex(1, 2), Vertex(3, 2))
+    line = Line(Point(1, 2), Point(3, 2))
 
     crossed_points = line.get_points_crossed()
 
