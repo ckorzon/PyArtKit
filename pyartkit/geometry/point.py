@@ -22,6 +22,15 @@ class Point:
             return False
         return self._x == other.x and self._y == other.y
 
+    def __str__(self) -> str:
+        return f"({self._x}, {self._y})"
+
+    def __repr__(self) -> str:
+        return f"Point({self._x}, {self._y})"
+
+    def __hash__(self):
+        return hash(repr(self))
+
 
 def P(x, y):
     """Shorthand for creating a Point with the specified coordinates."""

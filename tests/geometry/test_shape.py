@@ -91,3 +91,88 @@ def test_circle_constructor():
     assert circle._radius == radius
 
 
+def test_circle_contains_point():
+    from pyartkit.geometry.shapes import Circle
+
+    # Test with a circle centered at (0, 0) with radius 5
+    circle = Circle(point_a, 5, fill_color=None, border_color=None, border_thickness=1)
+
+    assert circle.contains(0, 0)  # Center point
+    assert circle.contains(3, 4)  # Point on the circle
+    assert circle.contains(3, 0)  # Point inside the circle
+    assert not circle.contains(6, 0)  # Point outside the circle
+    assert not circle.contains(5, 5)  # Point outside the circle
+
+    circle = Circle(point_h, 3, fill_color=None, border_color=None, border_thickness=1)
+    assert circle.contains(3, -4)
+    assert circle.contains(0, -4)
+    assert circle.contains(2, -4)
+    assert not circle.contains(0, -2)
+
+
+def test_construct_rectangle():
+    from pyartkit.geometry.shapes import Rectangle
+    top_left = Point(1, 1)
+    rectangle = Rectangle(top_left, 4, 3, fill_color=None, border_color=None, border_thickness=1)
+    expected_vertices = {top_left, Point(4, 1), Point(4, -1), Point(1, -1)}
+    assert len(rectangle.get_vertices()) == len(expected_vertices)
+    for vertex in rectangle.get_vertices():
+        for vertex_expected in expected_vertices:
+            if vertex == vertex_expected:
+                expected_vertices.remove(vertex_expected)
+                break
+    assert len(expected_vertices) == 0
+
+def test_construct_rectangle_from_center():
+    from pyartkit.geometry.shapes import Rectangle
+
+    rectangle = Rectangle.from_center((2, 1), 5, 7, fill_color=None, border_color=None, border_thickness=1)
+    expected_vertices = {Point(0, 4), Point(4, 4), Point(4, -2), Point(0, -2)}
+    assert len(rectangle.get_vertices()) == len(expected_vertices)
+    for vertex in rectangle.get_vertices():
+        for vertex_expected in expected_vertices:
+            if vertex == vertex_expected:
+                expected_vertices.remove(vertex_expected)
+                break
+    assert len(expected_vertices) == 0
+
+def test_construct_rectangle_from_diagonals():
+    from pyartkit.geometry.shapes import Rectangle
+    # TODO: Verify AI generated code
+    rectangle = Rectangle.from_diagonals(P(0, 0), P(4, 3), fill_color=None, border_color=None, border_thickness=1)
+    expected_vertices = {Point(0, 0), Point(4, 0), Point(4, 3), Point(0, 3)}
+    assert len(rectangle.get_vertices()) == len(expected_vertices)
+    for vertex in rectangle.get_vertices():
+        for vertex_expected in expected_vertices:
+            if vertex == vertex_expected:
+                expected_vertices.remove(vertex_expected)
+                break
+    assert len(expected_vertices) == 0
+    
+
+def test_construct_square():
+    from pyartkit.geometry.shapes import Square
+
+    p = P(-3, 3)
+    square = Square(p, 4, fill_color=None, border_color=None, border_thickness=1)
+    expected_vertices = {p, Point(0, 3), Point(0, 0), Point(-3, 0)}
+    assert len(square.get_vertices()) == len(expected_vertices)
+    for vertex in square.get_vertices():
+        for vertex_expected in expected_vertices:
+            if vertex == vertex_expected:
+                expected_vertices.remove(vertex_expected)
+                break
+    assert len(expected_vertices) == 0
+
+def test_construct_square_from_center():
+    from pyartkit.geometry.shapes import Square
+
+    square = Square.from_center((0,0), 5, fill_color=None, border_color=None, border_thickness=1)
+    expected_vertices = {Point(-2, 2), Point(-2, -2), Point(2, -2), Point(2, 2)}
+    assert len(square.get_vertices()) == len(expected_vertices)
+    for vertex in square.get_vertices():
+        for vertex_expected in expected_vertices:
+            if vertex == vertex_expected:
+                expected_vertices.remove(vertex_expected)
+                break
+    assert len(expected_vertices) == 0

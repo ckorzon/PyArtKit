@@ -166,8 +166,109 @@ class Polygon(Shape):
 
 
 class Rectangle(Polygon):
-    # TODO
-    pass
+
+    def __init__(self, top_left: Point, width: int, height: int, fill_color: ColorScheme = None, border_color: ColorScheme = None, border_thickness=1):
+        """
+        Initialize a rectangle with the top-left corner, width, height, and optional colors.
+        
+        Args:
+            top_left (Point): The top-left corner of the rectangle.
+            width (int): The width of the rectangle.
+            height (int): The height of the rectangle.
+            fill_color (ColorScheme, optional): The fill color of the rectangle. Defaults to None.
+            border_color (ColorScheme, optional): The border color of the rectangle. Defaults to None.
+            border_thickness (int, optional): The border thickness of the rectangle. Defaults to 1.
+        """
+        # Count the initial vertex as 1 width since we are operating on pixels
+        width_delta = max(0, width - 1)
+        height_delta = max(0, height - 1)
+        vertices = [
+            top_left,
+            Point(top_left.x + width_delta, top_left.y),
+            Point(top_left.x + width_delta, top_left.y - height_delta),
+            Point(top_left.x, top_left.y - height_delta)
+        ]
+        super().__init__(vertices, fill_color, border_color, border_thickness)
+
+    @staticmethod
+    def from_diagonals(corner_a: Point, corner_b: Point, fill_color: ColorScheme = None, border_color: ColorScheme = None, border_thickness=1) -> 'Rectangle':
+        """
+        Create a rectangle from the top-left and bottom-right corners.
+        
+        Args:
+            corner_a (Point): One corner of the rectangle.
+            corner_b (Point): A corner of the rectangle diagonal from corner_a.
+            fill_color (ColorScheme, optional): The fill color of the rectangle. Defaults to None.
+            border_color (ColorScheme, optional): The border color of the rectangle. Defaults to None.
+            border_thickness (int, optional): The border thickness of the rectangle. Defaults to 1.
+        
+        Returns:
+            Rectangle: A new Rectangle instance.
+        """
+        width = abs(corner_a.x - corner_b.x) + 1
+        height = abs(corner_a.y - corner_b.y) + 1
+        top_left = Point(min(corner_a.x, corner_b.x), max(corner_a.y, corner_b.y))
+        return Rectangle(top_left, width, height, fill_color, border_color, border_thickness)
+
+    @staticmethod
+    def from_center(center: tuple, width: int, height: int, fill_color: ColorScheme = None, border_color: ColorScheme = None, border_thickness=1) -> 'Rectangle':
+        """
+        Create a rectangle from the center point, width, and height.
+        
+        Args:
+            center (tuple): The center point of the rectangle as (x, y).
+            width (int): The width of the rectangle.
+            height (int): The height of the rectangle.
+            fill_color (ColorScheme, optional): The fill color of the rectangle. Defaults to None.
+            border_color (ColorScheme, optional): The border color of the rectangle. Defaults to None.
+            border_thickness (int, optional): The border thickness of the rectangle. Defaults to 1.
+        
+        Returns:
+            Rectangle: A new Rectangle instance.
+        """
+        top_left = Point(center[0] - width // 2, center[1] + height // 2)
+        return Rectangle(top_left, width, height, fill_color, border_color, border_thickness)
+
+
+class Square(Rectangle):
+    def __init__(self, top_left: Point, side_length: int, fill_color: ColorScheme = None, border_color: ColorScheme = None, border_thickness = 1):
+        """
+        Initialize a square with the top-left corner and side length.
+        
+        Args:
+            top_left (Point): The top-left corner of the square.
+            side_length (int): The length of each side of the square.
+            fill_color (ColorScheme, optional): The fill color of the square. Defaults to None.
+            border_color (ColorScheme, optional): The border color of the square. Defaults to None.
+            border_thickness (int, optional): The border thickness of the square. Defaults to 1.
+        """
+        super().__init__(top_left, side_length, side_length, fill_color, border_color, border_thickness)
+
+    @staticmethod
+    def from_diagonals(corner_a: Point, corner_b: Point, fill_color: ColorScheme = None, border_color: ColorScheme = None, border_thickness = 1):
+        width = abs(corner_b.x - corner_a.x)
+        height = abs(corner_b.y - corner_a.y)
+        assert width == height, "For a square, the width and height must be equal."
+        top_left = Point(min(corner_a.x, corner_b.x), min(corner_a.y, corner_b.y))
+        return Square(top_left, width, fill_color, border_color, border_thickness)
+ 
+    @staticmethod
+    def from_center(center: tuple, side_length: int, fill_color: ColorScheme = None, border_color: ColorScheme = None, border_thickness=1) -> 'Square':
+        """
+        Create a square from the center point and side length.
+        
+        Args:
+            center (tuple): The center point of the square as (x, y).
+            side_length (int): The length of each side of the square.
+            fill_color (ColorScheme, optional): The fill color of the square. Defaults to None.
+            border_color (ColorScheme, optional): The border color of the square. Defaults to None.
+            border_thickness (int, optional): The border thickness of the square. Defaults to 1.
+        
+        Returns:
+            Square: A new Square instance.
+        """
+        top_left = Point(center[0] - side_length // 2, center[1] + side_length // 2)
+        return Square(top_left, side_length, fill_color, border_color, border_thickness)
 
 
 class Circle(Shape):
