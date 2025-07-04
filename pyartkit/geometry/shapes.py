@@ -1,13 +1,15 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import List
 
+from pyartkit.color.color import Color
 from pyartkit.color.colorscheme import ColorScheme
 from pyartkit.geometry.point import Point
+from pyartkit.graphic import Graphic
 
 
 # * NOTE: PIL has a built-in ImageDraw class that can be used to draw shapes on images. BUT it doesn't support gradients or edge colors. Should we extend it or create our own?
 
-class Shape(ABC):
+class Shape(Graphic):
 
     __slots__ = ('_fill_color', '_border_color', '_border_thickness')
     _fill_color: ColorScheme
@@ -21,19 +23,19 @@ class Shape(ABC):
         assert isinstance(border_thickness, int) and border_thickness >= 0, "Border thickness must be a non-negative integer."
         self._border_thickness = border_thickness
 
-    def set_fill_color(self, color):
+    def set_fill_color_scheme(self, color):
         """Set the fill color of the shape."""
         self._fill_color = color
 
-    def get_fill_color(self):
+    def get_fill_color_scheme(self):
         """Get the fill color of the shape."""
         return self._fill_color
 
-    def set_border_color(self, color):
+    def set_border_color_scheme(self, color):
         """Set the edge color of the shape."""
         self._border_color = color
 
-    def get_border_color(self):
+    def get_border_color_scheme(self):
         """Get the edge color of the shape."""
         return self._border_color
 
@@ -45,19 +47,19 @@ class Shape(ABC):
         """Get the edge width of the shape."""
         return self._border_thickness
 
-    @abstractmethod
-    def contains(self, x: int, y: int) -> bool:
+    def get_pixel_color(self, x: int = None, y: int = None) -> Color:
         """
-        Check if the shape contains the point (x, y).
+        Get the color of the shape at a specific pixel.
         
         Args:
-            x (int): The x-coordinate of the point.
-            y (int): The y-coordinate of the point.
+            x (int): The x-coordinate of the pixel.
+            y (int): The y-coordinate of the pixel.
         
         Returns:
-            bool: True if the shape contains the point, False otherwise.
+            Color: The color of the shape at the specified pixel.
         """
-        pass
+        # TODO: Determine if the pixel is part of the border or fill
+        return self._fill_color.get_color_for_pixel(x, y) if self._fill_color else None
 
     @abstractmethod
     def max_x(self) -> int:
@@ -154,6 +156,62 @@ class Polygon(Shape):
 
     def min_y(self) -> int:
         return min(vertex.y for vertex in self.vertices)
+
+    def get_bounds(self) -> tuple:
+        min_x, min_y, max_x, max_y = None, None, None, None
+        for v in self._vertices:
+            if min_x is None or v.x < min_x:
+                min_x = v.x
+            if max_x is None or v.x > max_x:
+                max_x = v.x
+            if min_y is None or v.y < min_y:
+                min_y = v.y
+            if max_y is None or v.y > max_y:
+                max_y = v.y
+        return (min_x, min_y, max_x, max_y)
+
+    def is_empty(self) -> bool:
+        """
+        Check if the polygon is empty (i.e., has no vertices).
+        
+        Returns:
+            bool: True if the polygon is empty, False otherwise.
+        """
+        return len(self._vertices) == 0
+
+    def get_center(self) -> tuple:
+        """Return the center of the polygon as a tuple (x, y)."""
+        if self.is_empty():
+            return (0, 0)
+        min_x, min_y, max_x, max_y = self.get_bounds()
+        x_bounds = (min_x, max_x)
+        y_bounds = (min_y, max_y)
+        width = x_bounds[1] - x_bounds[0]
+        height = y_bounds[1] - y_bounds[0]
+        center_x = x_bounds[0] + width // 2
+        center_y = y_bounds[0] + height // 2
+        return center_x, center_y
+
+    def set_center(self, x, y):
+        center: tuple = self.get_center()
+        delta_x = x - center[0]
+        delta_y = y - center[1]
+        for vertex in self._vertices:
+            vertex.translate(delta_x, delta_y)
+
+    def set_top_left(self, x: int, y: int):
+        """
+        Set the top-left corner of the polygon to the specified coordinates.
+        
+        Args:
+            x (int): The x-coordinate of the top-left corner.
+            y (int): The y-coordinate of the top-left corner.
+        """
+        min_x, _, _, max_y = self.get_bounds()
+        delta_x = x - min_x
+        delta_y = y - max_y
+        for vertex in self._vertices:
+            vertex.translate(delta_x, delta_y)
 
     def get_vertices(self) -> List[Point]:
         """
@@ -281,6 +339,39 @@ class Circle(Shape):
         super().__init__(fill_color, border_color, border_thickness)
         self._center = center
         self._radius = radius
+
+    def get_bounds(self):
+        if not self._center or self._radius <= 0:
+            return (None, None, None, None)
+        return (
+            self._center.x - self._radius,
+            self._center.y - self._radius,
+            self._center.x + self._radius,
+            self._center.y + self._radius
+        )
+
+    def get_center(self) -> tuple:
+        return self._center.x, self._center.y
+
+    def set_center(self, x: int, y: int):
+        """
+        Set the center of the circle to the specified coordinates.
+        
+        Args:
+            x (int): The x-coordinate of the new center.
+            y (int): The y-coordinate of the new center.
+        """
+        self._center = Point(x, y)
+
+    def is_empty(self):
+        return not self._center or self._radius <= 0
+
+    def set_top_left(self, x, y):
+        current_top_left = (self.min_x(), self.max_y())
+        delta_x = x - current_top_left[0]
+        delta_y = y - current_top_left[1]
+        self._center.x += delta_x
+        self._center.y -= delta_y
 
     def contains(self, x: int, y: int) -> bool:
         return (x - self._center.x) ** 2 + (y - self._center.y) ** 2 <= self._radius ** 2

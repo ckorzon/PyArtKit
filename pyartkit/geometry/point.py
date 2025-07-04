@@ -17,6 +17,15 @@ class Point:
     def y(self) -> int:
         return self._y
 
+    def translate(self, dx: int, dy: int):
+        """
+        Translate the point by the specified offsets.
+        :param dx: The offset in the x direction.
+        :param dy: The offset in the y direction.
+        """
+        self._x += dx
+        self._y += dy
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Point):
             return False

@@ -7,7 +7,7 @@ class ColorScheme(ABC):
     pass
 
     @abstractmethod
-    def get_color_for_pixel(self, x, y) -> Color:
+    def get_color_for_pixel(self, x: int, y: int) -> Color:
         """
         Get the color for a pixel at (x, y) coordinates.
         
@@ -34,5 +34,5 @@ class StaticColorScheme(ColorScheme):
         """
         self.color = color
 
-    def get_color_for_pixel(self, x, y) -> Color:
+    def get_color_for_pixel(self, x: int, y: int) -> Color:
         return self.color
