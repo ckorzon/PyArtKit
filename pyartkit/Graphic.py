@@ -1,21 +1,16 @@
 from abc import ABC, abstractmethod
 
+from pyartkit.color.color import Color
+
 
 class Graphic(ABC):
     """
     Abstract base class for all graphic objects.
     """
 
-    @abstractmethod
-    def draw(self, canvas):
-        """
-        Draw the graphic on the given canvas.
-        :param canvas: The canvas to draw on.
-        """
-        pass
 
     @abstractmethod
-    def get_bounds(self):
+    def get_bounds(self) -> tuple:
         """
         Get the bounding box of the graphic.
         :return: A tuple (x_min, y_min, x_max, y_max).
@@ -58,6 +53,22 @@ class Graphic(ABC):
         """
         pass
 
+    @abstractmethod
+    def contains(self, x: int, y: int) -> bool:
+        """
+        Check if the graphic contains a point.
+        :param x: The x-coordinate of the point.
+        :param y: The y-coordinate of the point.
+        :return: True if the graphic contains the point, False otherwise.
+        """
+        pass
 
-
-    
+    @abstractmethod
+    def get_pixel_color(self, x: int = None, y: int = None) -> Color:
+        """
+        Get the color of the graphic.
+        :param x: The x-coordinate of the point (optional).
+        :param y: The y-coordinate of the point (optional).
+        :return: A tuple representing the color (R, G, B, A).
+        """
+        pass
