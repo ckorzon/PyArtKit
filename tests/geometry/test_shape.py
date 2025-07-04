@@ -80,6 +80,54 @@ def test_polygon_contains_point():
     assert not chevron.contains(0, 0.5)
 
 
+def test_polygon_is_empty():
+    from pyartkit.geometry.shapes import Polygon
+
+    # Test with an empty polygon
+    empty_polygon = Polygon([], fill_color=None, border_color=None, border_thickness=1)
+    assert empty_polygon.is_empty() is True
+
+    # Test with a non-empty polygon
+    triangle = Polygon([point_a, point_b, point_c], fill_color=None, border_color=None, border_thickness=1)
+    assert triangle.is_empty() is False
+
+    # Test with a polygon with one vertex
+    single_vertex_polygon = Polygon([point_a], fill_color=None, border_color=None, border_thickness=1)
+    assert single_vertex_polygon.is_empty() is False
+
+
+def test_polygon_get_bounds():
+    from pyartkit.geometry.shapes import Polygon
+
+    # Test with a simple triangle
+    triangle = Polygon([P(-3,4), P(5,-1), P(3,7)], fill_color=None, border_color=None, border_thickness=1)
+    assert triangle.get_bounds() == (-3, -1, 5, 7)
+
+    # Test with a hexagon
+    hexagon = Polygon([P(3,1), P(5,1), P(7,3), P(5,4), P(3,4), P(0, 3)], fill_color=None, border_color=None, border_thickness=1)
+    assert hexagon.get_bounds() == (0, 1, 7, 4)
+
+    # Test with an empty polygon
+    empty_polygon = Polygon([], fill_color=None, border_color=None, border_thickness=1)
+    assert empty_polygon.get_bounds() == (None, None, None, None)
+
+
+def test_polygon_set_center():
+    
+    from pyartkit.geometry.shapes import Polygon
+
+    square = Polygon([P(0, 4), P(4, 4), P(4, 0), P(0, 0)])
+    assert square.get_center() == (2, 2)
+
+    rectangle = Polygon([P(0, 4), P(8, 4), P(8, 0), P(0, 0)])
+    assert rectangle.get_center() == (4, 2)
+
+
+def test_polygon_set_top_left():
+    # TODO
+    pass
+
+
 def test_circle_constructor():
     from pyartkit.geometry.shapes import Circle
 
@@ -108,6 +156,42 @@ def test_circle_contains_point():
     assert circle.contains(0, -4)
     assert circle.contains(2, -4)
     assert not circle.contains(0, -2)
+
+def test_circle_is_empty():
+    from pyartkit.geometry.shapes import Circle
+
+    # Test with an empty circle (center is None or radius is 0)
+    empty_circle = Circle(None, 0, fill_color=None, border_color=None, border_thickness=1)
+    assert empty_circle.is_empty() is True
+
+    # Test with a non-empty circle
+    circle = Circle(point_a, 5, fill_color=None, border_color=None, border_thickness=1)
+    assert circle.is_empty() is False
+
+
+def test_circle_get_bounds():
+    from pyartkit.geometry.shapes import Circle
+
+    # Test with a circle centered at (0, 0) with radius 5
+    circle = Circle(point_a, 5, fill_color=None, border_color=None, border_thickness=1)
+    assert circle.get_bounds() == (-5, -5, 5, 5)
+
+    # Test with a circle centered at (3, -4) with radius 3
+    circle = Circle(point_h, 3, fill_color=None, border_color=None, border_thickness=1)
+    assert circle.get_bounds() == (0, -7, 6, -1)
+
+def test_circle_set_center():
+    from pyartkit.geometry.shapes import Circle
+
+    # Test setting the center of a circle
+    circle = Circle(point_a, 5, fill_color=None, border_color=None, border_thickness=1)
+    assert circle.get_center() == (point_a.x, point_a.y)
+    circle.set_center(2, 3)
+    assert circle.get_center() == (2, 3)
+
+    # Test setting the center to a new point
+    circle.set_center(-1, -1)
+    assert circle.get_center() == (-1, -1)
 
 
 def test_construct_rectangle():
