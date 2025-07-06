@@ -181,6 +181,7 @@ config.yml
 ignoreme.py
 .vscode
 *.gif
+*.png
 server_user_id.txt
 *.bkp
 *.pyc
