@@ -1,10 +1,32 @@
 
-from abc import ABC
+from abc import ABC, abstractmethod
+
+
+COLOR_MODES = ('RGB', 'RGBA')
 
 
 class Color(ABC):
     """Base class for all Color types."""
-    pass
+
+    @abstractmethod
+    def to_tuple(self) -> tuple:
+        """
+        Convert the color to a tuple.
+        
+        Returns:
+            tuple: A color tuple (e.g., RGB or RGBA).
+        """
+        pass
+
+    @abstractmethod
+    def get_supported_color_modes(self) -> set:
+        """
+        Get the set of supported color modes for this color type.
+        
+        Returns:
+            set: A set of supported color modes (e.g., {'RGB', 'RGBA'}).
+        """
+        pass
 
 
 class RGBColor(Color):
@@ -57,6 +79,9 @@ class RGBColor(Color):
         """
         return f"RGB({self.r}, {self.g}, {self.b})"
 
+    def get_supported_color_modes(self):
+        return {"RGB",}
+
 
 class RGBAColor(RGBColor):
     """
@@ -107,3 +132,6 @@ class RGBAColor(RGBColor):
             str: A string in the format 'RGBA(r, g, b, a)'.
         """
         return f"RGBA({self.r}, {self.g}, {self.b}, {self.a})"
+
+    def get_supported_color_modes(self):
+        return {"RGBA",}
